@@ -12,7 +12,7 @@ var Group = require('./group.model');
 
 // Get list of things
 exports.index = function(req, res) {
-  Group.findById(req.params.id, function (err, group) {
+  Group.find(function (err, group) {
     if(err) { return handleError(res, err); }
     if(!group) { return res.status(404).send('Not Found'); }
     return res.json(group);

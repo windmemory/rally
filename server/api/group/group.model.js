@@ -4,7 +4,6 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var GroupSchema = new Schema({
-  groupId: String,
   startDate: String,
   places: [{id: String,
           latitude: Number,
