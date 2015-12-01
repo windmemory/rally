@@ -6,12 +6,17 @@ angular.module('rallyangApp', [
   'ngSanitize',
   'btford.socket-io',
   'ui.router',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'uiGmapgoogle-maps'
 ])
-  .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
+  .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, uiGmapGoogleMapApiProvider) {
     $urlRouterProvider
       .otherwise('/');
 
+    uiGmapGoogleMapApiProvider.configure({
+        libraries: 'weather,geometry,visualization'
+    });
+     
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('authInterceptor');
   })
