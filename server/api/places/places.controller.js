@@ -1,6 +1,6 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /places/:Gid         ->  index
+ * GET     /places              ->  index
  * POST    /places              ->  create
  * GET     /places/:id          ->  show
  * PUT     /places/:id          ->  update
@@ -11,13 +11,21 @@
 
 var _ = require('lodash');
 var Group = require('../group/group.model');
-
+var request = require('request');
+var ggApiKey = "AIzaSyAHV1wqS2So1_wOxGcXf1D9fzeaIapQ_Is";
 // Get list of things
+
+var geoRequestBuilder = function (city) {
+	var result = "https://maps.googleapis.com/maps/api/geocode/json";
+	result += "?address=" + city;
+	result += "&key=" + ggApiKey;
+	return encodeURI(result);
+}
+
 exports.index = function(req, res) {
-  Group.findById(req.params.Gid, function (err, group) {
+  Group.find(function (err, group) {
     if(err) { return handleError(res, err); }
-    JSON.parse(group);
-	return res.status(200).json(group);
+	return res.status(200).json(group[0].places);
   });
 };
 
@@ -32,9 +40,23 @@ exports.show = function(req, res) {
 
 // Creates a new thing in the DB.
 exports.create = function(req, res) {
-  Group.create(req.body, function(err, thing) {
+  
+  Group.find(function(err, group) {
     if(err) { return handleError(res, err); }
-    return res.status(201).json(thing);
+    var place = req.body;
+    var requesturl = geoRequestBuilder(place.title);
+    request(requesturl, function(err, content, body) {
+      var loc = JSON.parse(body).results[0].geometry.location;
+      place.latitude = loc.lat;
+      place.longtitude = loc.lng;
+      place.estimatedPrice = 0;
+      group[0].places.push(place);
+      console.log(group);
+      group[0].save(function (err) {
+        if (err) {return handleError(res, err); }
+        return res.status(200).json(group);
+      });
+    });
   });
 };
 
