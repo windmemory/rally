@@ -32,3 +32,23 @@
 .navbar-text {
     margin-left: 15px;
 }
+
+.place-card {
+    /*background-color: #000000*/
+}
+
+.days {
+    float: right
+}
+
+.full button span {
+    background-color: limegreen;
+    border-radius: 32px;
+    color: black;
+}
+
+.partially button span {
+    background-color: orange;
+    border-radius: 32px;
+    color: black;
+}
