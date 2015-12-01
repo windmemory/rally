@@ -10,17 +10,17 @@ angular.module('rallyangApp')
         lengthOfStay: 5,
         estimatedPrice: 100,
         locationDeals: [{
-          title: "One deal",
+          title: 'One deal',
           price: 100
         }]
       }],
-      defaultUsers = [{name: "Lyle"}, {name: "Radu"}],
+      defaultUsers = [{name: 'Lyle'}, {name: 'Radu'}],
       defaultGroupId = 1,
-      groupTrips = new Object();
+      groupTrips = {};
       
     groupTrips[defaultGroupId] = {
-        groupId: "1",
-        startDate: "12/1/2015",
+        groupId: '1',
+        startDate: '12/1/2015',
         places: defaultLocations,
         people: defaultUsers,
         map: { center: { latitude: 47, longitude: -122 }, zoom: 8 }
@@ -28,11 +28,11 @@ angular.module('rallyangApp')
 
     this.getGroupTrip = function(groupId, resultCallback) {
       resultCallback(groupTrips[groupId]);
-    }
+    };
     
     this.addPlace = function(placeName) {
       console.log('adding ' + placeName);
-    }
+    };
     
     /*
     var createRandomMarker = function (i, bounds, idKey) {

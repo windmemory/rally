@@ -2,10 +2,10 @@
 
 angular.module('rallyangApp')
   .controller('MainCtrl', function ($scope, $http, socket, uiGmapGoogleMapApi, LocationModelService) {
-    newPlaceName = '';
+    $scope.newPlaceName = '';
     
     LocationModelService.getGroupTrip(1, function(group) {
-      if (group != null) {
+      if (group !== null) {
         $scope.map = group.map;
         $scope.map.markers = group.places;
       }
