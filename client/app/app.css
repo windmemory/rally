@@ -37,3 +37,5 @@
     color: #000;
     padding: 0.2em 0;
 }
+
+.angular-google-map-container { height: 600px; }
