@@ -18,7 +18,16 @@
         </p>
       </form>
 
-      <ul ng-repeat="thing in awesomeThings">
+      <uib-accordion close-others="oneAtATime">
+          <uib-accordion-group heading="Static Header, initially expanded" is-open="true" is-disabled="false">
+            This content is straight in the template.
+          </uib-accordion-group>
+          <uib-accordion-group heading="test" ng-repeat="group in groups">
+            {{group.content}}
+          </uib-accordion-group>
+        </uib-accordion>        
+        
+      <ul ng-repeat="thing in awesomeThings">        
         <li><a href="#" tooltip="{{thing.info}}">{{thing.name}}<button type="button" class="close" ng-click="deleteThing(thing)">&times;</button></a></li>
       </ul>
     </div>    

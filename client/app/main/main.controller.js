@@ -4,6 +4,7 @@ angular.module('rallyangApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
     $scope.awesomeThings = [];
     $scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
+    $scope.groups = [{content: 'location one'}, {content: 'location two'}];
 
     $http.get('/api/things').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
