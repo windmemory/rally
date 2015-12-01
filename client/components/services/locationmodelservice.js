@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rallyangApp')
-  .service('LocationModelService', function () {
+  .service('LocationModelService', function ($http) {
     var defaultLocations = [{
         id: '1marker',
         latitude: 47,
@@ -30,8 +30,11 @@ angular.module('rallyangApp')
       resultCallback(groupTrips[groupId]);
     };
     
-    this.addPlace = function(placeName) {
+    this.addPlace = function(placeName, lengthOfStay) {
       console.log('adding ' + placeName);
+      $http.post('/api/places', {title: placeName, lengthOfStay: 1}).success(function() {
+        console.log(placeName + ' added');        
+      });
     };
     
     /*
