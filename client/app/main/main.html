@@ -5,74 +5,32 @@
   <div class="row">  
     <div class="col-lg-9">
       <strong>Itinerary planner</strong>
-      <ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>
+      <ui-gmap-google-map center='map.center' zoom='map.zoom' draggable='true'>
+          <!--<ui-gmap-layer namespace="weather" type="WeatherLayer" show="true"></ui-gmap-layer>
+          <ui-gmap-layer namespace="visualization" type="HeatmapLayer" show="true"></ui-gmap-layer>-->
+          <ui-gmap-markers models="map.markers" coords="'self'" icon="'icon'" click="onMarkerClicked" modelsbyref="true" doCluster="false" >
+          </ui-gmap-markers>       
+      </ui-gmap-google-map>
     </div>
+    
     <div class="col-lg-3">
-      
-      <div>
-        <pre>Selected date is: <em>{{dt | date:'fullDate' }}</em></pre>
-    
-        
-    
-        <h4>Popup</h4>
-        <div class="row">
-            <div class="col-md-12">
-                <p class="input-group">
-                  <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt" is-open="status.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
-                  <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                  </span>
-                </p>
-            </div>
-    
-            
-        </div>
-    
-        <hr />
-    </div>
-      
+      <strong>Places to go:</strong> <br />
       <form class="thing-form">
         <label>Syncs in realtime across clients</label>
         <p class="input-group">
-          <input type="text" class="form-control" placeholder="Add a new thing here." ng-model="newThing">
+          <input type="text" class="form-control" placeholder="Add a new place here." ng-model="newPlaceName">
           <span class="input-group-btn">
-            <button type="submit" class="btn btn-primary" ng-click="addThing()">Add New</button>
+            <button type="submit" class="btn btn-primary" ng-click="addPlace()">Add Place</button>
           </span>
         </p>
       </form>
-        
-        <script type="text/ng-template" id="template/accordion/accordion-group.html">
-          <div class="panel" ng-class="panelClass || 'panel-default'">
-            <div class="panel-heading" ng-keypress="toggleOpen($event)">                
-              <div tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading">
-                <span class="panel-title">
-                  <span ng-class="{'text-muted': isDisabled}">{{heading}}</span>
-                </span>
-                <span class="days">
-                  <span ng-class="{'text-muted': isDisabled}">{{days}}</span>
-                </span>
-              </div>
-            </div>
-            <div class="panel-collapse collapse" uib-collapse="!isOpen">
-              <div class="panel-body" ng-transclude></div>
-            </div>
-          </div>
-        </script>
-        
-        <script type="text/ng-template" id="template/accordion/accordion.html">
-          <div class="panel-group place-card" ng-transclude>
-          </div>
-        </script>
-               
-        <uib-accordion close-others='true'>
-          <uib-accordion-group heading="{{thing.name}}" days="3day" ng-repeat="thing in awesomeThings">
-            {{thing.info}}
+
+      <uib-accordion close-others="oneAtATime">
+          <uib-accordion-group heading="{{group.title}}" is-open="true" is-disabled="false" ng-repeat="group in map.markers">
+            {{group.title}}
           </uib-accordion-group>
-        </uib-accordion>
+      </uib-accordion>
         
-      <ul ng-repeat="thing in awesomeThings">        
-        <li><a href="#" tooltip="{{thing.info}}">{{thing.name}}<button type="button" class="close" ng-click="deleteThing(thing)">&times;</button></a></li>
-      </ul>
     </div>    
   </div>
 
@@ -80,8 +38,6 @@
 
 <footer class="footer">
   <div class="container">
-      <p>Angular Fullstack v2.1.1 |
-        <a href="https://twitter.com/tyhenkel">@tyhenkel</a> |
-         <a href="https://github.com/DaftMonk/generator-angular-fullstack/issues?state=open">Issues</a></p>
+      <p>Trip Planner</p>
   </div>
 </footer>
