@@ -23,16 +23,20 @@ exports.index = function(req, res) {
   Group.find(function (err, group) {
     if(err) { return handleError(res, err); }
     var depTime = new Date(group[0].startDate);
-  	var airports = group[0].places.map(function(x) {return x.airport});
+  	var airports = [];
+    for (var i = 0; i < group[0].places.length; i++) {
+      airports[group[0].places[i].orderID] = group[0].places[i].airport;
+    }
 	  airports.unshift(req.params.home);
     airports.push(req.params.home);
+    console.log(airports);
     var flights = [];
     for (var i = 1; i < airports.length; i++) {
       var pair = {};
       pair.departure = airports[i - 1];
       pair.arrival = airports[i];
       pair.date = depTime.toISOString().slice(0,10);
-      flights.push(pair);
+      if (pair.departure !== pair.arrival) flights.push(pair);
       if (i != airports.length - 1) {
         depTime.setDate(depTime.getDate() + group[0].places[i - 1].lengthOfStay);
       }

@@ -48,6 +48,7 @@ exports.create = function(req, res) {
       place.latitude = loc.lat;
       place.longtitude = loc.lng;
       place.estimatedPrice = 0;
+      place.orderID = group[0].places.length;
       var portRequestStr = airportRequestBuilder(place.title);
       request(portRequestStr, function(err, content, body) {
         var airport = JSON.parse(body).sr[0].pt[0].t;
