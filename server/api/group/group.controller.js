@@ -20,6 +20,7 @@ exports.index = function(req, res) {
 };
 
 exports.create = function(req, res) {
+  console.log('creating object: ' + JSON.stringify(req.body));
   Group.create(req.body, function(err, group) {
     if(err) { return handleError(res, err); }
     return res.status(201).json(group);

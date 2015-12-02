@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('rallyangApp')
-  .service('LocationModelService', function () {
+  .service('LocationModelService', function ($http) {
+    /*
     var defaultLocations = [{
         id: '1marker',
         latitude: 47,
@@ -25,13 +26,36 @@ angular.module('rallyangApp')
         people: defaultUsers,
         map: { center: { latitude: 47, longitude: -122 }, zoom: 8 }
     };
+    */
 
     this.getGroupTrip = function(groupId, resultCallback) {
-      resultCallback(groupTrips[groupId]);
+      $http.get('/api/group').success(function(groups) {
+        if (groups && groups.length) {
+          var result = groups[0];
+          
+          result.places = _.map(result.places, function(place) {
+            if (place._id) {
+              place.id = place._id;
+            }
+            return place;
+          });
+          
+          if (result.places && result.places.length) {
+            result.map = { center: { latitude: result.places[0].latitude, longitude: result.places[0].longitude }, zoom: 8 };            
+          } else {
+            result.map = { center: { latitude: 47.610377, longitude: -122.2006786 }, zoom: 8 };
+          }
+          
+          resultCallback(result);
+        }
+      });
     };
     
-    this.addPlace = function(placeName) {
+    this.addPlace = function(placeName, lengthOfStay) {
       console.log('adding ' + placeName);
+      $http.post('/api/places', {title: placeName, lengthOfStay: lengthOfStay}).success(function() {
+        console.log(placeName + ' added');
+      });
     };
     
     /*

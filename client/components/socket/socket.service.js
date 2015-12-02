@@ -39,6 +39,8 @@ angular.module('rallyangApp')
           var index = array.indexOf(oldItem);
           var event = 'created';
 
+          console.log('model created for ' + modelName + ': ' + JSON.stringify(item));
+          
           // replace oldItem if it exists
           // otherwise just add item to the collection
           if (oldItem) {

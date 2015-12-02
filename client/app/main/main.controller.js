@@ -3,11 +3,26 @@
 angular.module('rallyangApp')
   .controller('MainCtrl', function ($scope, $http, socket, uiGmapGoogleMapApi, LocationModelService) {
     $scope.newPlaceName = '';
+    $scope.newPlaceLengthOfStay = 1;
+    $scope.groupId = 1;
+    $scope.lastUpdated = 0;
     
-    LocationModelService.getGroupTrip(1, function(group) {
+    var groupCallback = function(group) {
       if (group !== null) {
-        $scope.map = group.map;
-        $scope.map.markers = group.places;
+          $scope.map = group.map;
+          $scope.map.markers = group.places;
+        }      
+    };
+    
+    LocationModelService.getGroupTrip($scope.groupId, groupCallback);
+    socket.syncUpdates('group', [], function(event, item) {
+      console.log('reloading information for group ' + $scope.groupId + ' on event ' + event + ' for item ' + item);
+      var currentTime = new Date().getTime();
+      
+      if (currentTime - $scope.lastUpdated > 1000) {
+        console.log('query api for updates...');
+        LocationModelService.getGroupTrip($scope.groupId, groupCallback);
+        $scope.lastUpdated = currentTime;
       }
     });
         
@@ -24,12 +39,13 @@ angular.module('rallyangApp')
     };
     
     $scope.addPlace = function() {
-      if($scope.newPlaceName === '') {
+      if ($scope.newPlaceName === '' || $scope.newPlaceLengthOfStay < 1) {
         return;
       }
-      LocationModelService.addPlace($scope.newPlaceName);
+      LocationModelService.addPlace($scope.newPlaceName, $scope.newPlaceLengthOfStay);
       $scope.newPlaceName = '';
-    };    
+      $scope.newPlaceLengthOfStay = 1;
+    };
   
     $scope.addThing = function() {
       if($scope.newThing === '') {
