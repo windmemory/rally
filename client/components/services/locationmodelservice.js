@@ -37,13 +37,14 @@ angular.module('rallyangApp')
             if (place._id) {
               place.id = place._id;
             }
+            place.longitude = place.longtitude;
             return place;
           });
           
           if (result.places && result.places.length) {
-            result.map = { center: { latitude: result.places[0].latitude, longitude: result.places[0].longitude }, zoom: 8 };            
+            result.map = { center: { latitude: result.places[0].latitude, longitude: result.places[0].longtitude }, zoom: 4 };            
           } else {
-            result.map = { center: { latitude: 47.610377, longitude: -122.2006786 }, zoom: 8 };
+            result.map = { center: { latitude: 47.61, longitude: -122.20 }, zoom: 4 };
           }
           
           resultCallback(result);
@@ -56,6 +57,12 @@ angular.module('rallyangApp')
       $http.post('/api/places', {title: placeName, lengthOfStay: lengthOfStay}).success(function() {
         console.log(placeName + ' added');
       });
+    };
+    
+    this.removePlace = function(placeId) {
+      $http.delete('/api/places/' + placeId).success(function() {
+        console.log(placeId + ' removed');
+      });      
     };
     
     /*
