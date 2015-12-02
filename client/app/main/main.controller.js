@@ -61,7 +61,7 @@ angular.module('rallyangApp')
         return m._id === placeId;
       }));
       LocationModelService.updatePlace(placeToUpdate);
-    }
+    };
     
     Auth.isLoggedInAsync(function(isloggedIn) {
       if (isloggedIn) {

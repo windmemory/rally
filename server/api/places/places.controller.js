@@ -38,7 +38,7 @@ exports.index = function(req, res) {
 
 // add a new place in the DB.
 exports.create = function(req, res) {
-  if (req.body == null) return;
+  if (!req.body) return;
   Group.find(function(err, group) {
     if(err) { return handleError(res, err); }
     var place = req.body;

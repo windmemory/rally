@@ -71,7 +71,7 @@ angular.module('rallyangApp')
         $http.put('/api/places/' + placeToUpdate._id, placeToUpdate).success(function() {
           console.log(placeToUpdate._id + ' removed');
         });
-      };
+      }
     };
     
     /*
