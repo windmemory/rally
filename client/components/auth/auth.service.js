@@ -22,7 +22,8 @@ angular.module('rallyangApp')
 
         $http.post('/auth/local', {
           email: user.email,
-          password: user.password
+          password: user.password,
+          location: user.location
         }).
         success(function(data) {
           $cookieStore.put('token', data.token);

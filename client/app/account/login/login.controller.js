@@ -11,7 +11,8 @@ angular.module('rallyangApp')
       if(form.$valid) {
         Auth.login({
           email: $scope.user.email,
-          password: $scope.user.password
+          password: $scope.user.password,
+          location: $scope.user.location
         })
         .then( function() {
           // Logged in, redirect to home          

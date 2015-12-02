@@ -7,27 +7,51 @@ angular.module('rallyangApp')
     $scope.groupId = 1;
     $scope.lastUpdated = 0;
     $scope.chatUsers = [];
+    $scope.totalPrice = 0;
+    $scope.currentPerson = {};
     
     var groupCallback = function(group) {
       if (group !== null) {
           console.log('updating for group ' + JSON.stringify(group));
           $scope.map = group.map;
           $scope.map.markers = group.places;
+          var currentLoggedInUser = Auth.getCurrentUser();
+          
           console.log('scope updated to ' + JSON.stringify($scope.map));
+          
+          var currentUser = _.first(_.filter(group.people, function(people) {
+            console.log(people.name + ' vs ' + currentLoggedInUser.name)
+            return people.name === currentLoggedInUser.name;
+          }));
+          
+          $scope.currentPerson = currentUser;          
+          updatePricesForUserLocation();
         }
     };
+    
+    function updatePricesForUserLocation() {
+          if ($scope.currentPerson) {
+            console.log('current user for location: ' + JSON.stringify($scope.currentPerson));
+            LocationModelService.updatePlaceWithPrices($scope.currentPerson.airport, function(priceInfo) {
+              $scope.totalPrice = parseFloat(priceInfo.totalPrice).toFixed(2);
+              for (var i = 0; i < $scope.map.markers.length; i++) {
+                $scope.map.markers[i].price = priceInfo.prices[i];
+              }
+            });
+          }     
+    }
         
-    LocationModelService.getGroupTrip($scope.groupId, groupCallback);
-    socket.syncUpdates('group', [], function(event, item) {
-      console.log('reloading information for group ' + $scope.groupId + ' on event ' + event + ' for item ' + item);
-      var currentTime = new Date().getTime();
+    // LocationModelService.getGroupTrip($scope.groupId, groupCallback);
+    // socket.syncUpdates('group', [], function(event, item) {
+    //   console.log('reloading information for group ' + $scope.groupId + ' on event ' + event + ' for item ' + item);
+    //   var currentTime = new Date().getTime();
       
-      if (currentTime - $scope.lastUpdated > 1000) {
-        console.log('query api for updates...');
-        LocationModelService.getGroupTrip($scope.groupId, groupCallback);
-        $scope.lastUpdated = currentTime;
-      }
-    });
+    //   if (currentTime - $scope.lastUpdated > 1000) {
+    //     console.log('query api for updates...');
+    //     LocationModelService.getGroupTrip($scope.groupId, groupCallback);
+    //     $scope.lastUpdated = currentTime;
+    //   }
+    // });
     
     socket.syncUsers(function(users) {
       console.log('chat users: ' + JSON.stringify(users));
@@ -61,15 +85,29 @@ angular.module('rallyangApp')
         return m._id === placeId;
       }));
       LocationModelService.updatePlace(placeToUpdate);
+      updatePricesForUserLocation();
     };
     
     Auth.isLoggedInAsync(function(isloggedIn) {
       if (isloggedIn) {
         var loggedInUser = Auth.getCurrentUser();
         console.log('user logged in, add him to chat: ' + JSON.stringify(loggedInUser));
+        // LocationModelService.updatePeople(loggedInUser);
         socket.socket.emit('user:login', {name: loggedInUser.name});
+        
+        LocationModelService.getGroupTrip($scope.groupId, groupCallback);
+        socket.syncUpdates('group', [], function(event, item) {
+          console.log('reloading information for group ' + $scope.groupId + ' on event ' + event + ' for item ' + item);
+          var currentTime = new Date().getTime();
+          
+          if (currentTime - $scope.lastUpdated > 1000) {
+            console.log('query api for updates...');
+            LocationModelService.getGroupTrip($scope.groupId, groupCallback);
+            $scope.lastUpdated = currentTime;
+          }
+        });                         
       }
-    });
+    });        
   
   /*
     $http.get('/api/things').success(function(awesomeThings) {
