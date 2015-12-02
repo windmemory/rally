@@ -6,6 +6,7 @@
 'use strict';
 
 var Rx = require('rx');
+var _ = require('lodash');
 var Group = require('../group/group.model');
 var request = Rx.Observable.fromCallback(require('request'));
 var expApiKey = "VkCSTYX5FRtM7gxuWSjQYgLiTfG0yID0";
@@ -24,10 +25,9 @@ exports.index = function(req, res) {
     if(err) { return handleError(res, err); }
     var depTime = new Date(group[0].startDate);
   	var airports = [], i;
-    for (i = 0; i < group[0].places.length; i++) {
-      airports[group[0].places[i].orderID] = group[0].places[i].airport;
-    }
-    
+    airports = _.map(_.sortBy(group[0].places, function(place) {return place.orderID;}), function(x) {
+      return x.airport;
+    });
     if (!group[0].places || !group[0].places.length) return;
     
 	  airports.unshift(req.params.home);
@@ -42,6 +42,7 @@ exports.index = function(req, res) {
       if (pair.departure !== pair.arrival) flights.push(pair);
       if (i !== airports.length - 1 && i < group[0].places.length) {
         depTime.setDate(depTime.getDate() + group[0].places[i - 1].lengthOfStay);
+
       }
     }
     
