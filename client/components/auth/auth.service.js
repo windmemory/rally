@@ -27,6 +27,7 @@ angular.module('rallyangApp')
         success(function(data) {
           $cookieStore.put('token', data.token);
           currentUser = User.get();
+          // console.log('user logged in, add him to chat: ' + JSON.stringify(currentUser));
           deferred.resolve(data);
           return cb();
         }).
