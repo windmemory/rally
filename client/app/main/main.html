@@ -29,7 +29,7 @@
     
     <div class="col-lg-3">
       <div ng-if="chatUsers.length > 0">
-        <label>Planned by</label>
+        <label>Estimated Price ${{totalPrice}} based on roundtrip from {{currentPerson.location}} <br /><br /> Trip Planned by</label>
         <p>
           <span ng-repeat="user in chatUsers">{{user.name}} <br /></span>
         </p>
@@ -46,8 +46,12 @@
       </form>
 
       <uib-accordion close-others="oneAtATime">
-          <uib-accordion-group heading="{{group.title}}" is-open="true" is-disabled="false" ng-repeat="group in map.markers">
-            {{group.title}}
+          <uib-accordion-group heading="{{group.title}} ${{group.price}}" is-open="true" is-disabled="false" ng-repeat="group in map.markers">
+            
+            <div>
+              <button class="btn btn-default" type="button" ng-click="updatePlace(group._id)"><i class="glyphicon glyphicon-upload"></i> </button>
+              <button class="btn btn-default" type="button" ng-click="updatePlace(group._id)"><i class="glyphicon glyphicon-download"></i> </button>
+            </div>
                                    
             <div class="input-group">
               <input type="text" class="form-control" placeholder="Number of days" ng-model="group.lengthOfStay">

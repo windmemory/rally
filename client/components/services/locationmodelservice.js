@@ -74,6 +74,20 @@ angular.module('rallyangApp')
       }
     };
     
+    this.updatePlaceWithPrices = function(locationName, cb) {
+      $http.get('/api/price/' + locationName).success(function(response) {
+        console.log('price response: ' + JSON.stringify(response));
+        cb(response);
+      })  
+    }
+    
+    /*
+    this.updatePeople = function(loggedInUser) {
+      console.log('updating users for login ' + JSON.stringify(loggedInUser));  
+    };
+    */
+        
+    
     /*
     var createRandomMarker = function (i, bounds, idKey) {
       var latMin = bounds.southwest.latitude,

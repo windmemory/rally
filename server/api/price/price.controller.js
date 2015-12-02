@@ -27,6 +27,9 @@ exports.index = function(req, res) {
     for (i = 0; i < group[0].places.length; i++) {
       airports[group[0].places[i].orderID] = group[0].places[i].airport;
     }
+    
+    if (!group[0].places || !group[0].places.length) return;
+    
 	  airports.unshift(req.params.home);
     airports.push(req.params.home);
     console.log(airports);
@@ -37,7 +40,7 @@ exports.index = function(req, res) {
       pair.arrival = airports[i];
       pair.date = depTime.toISOString().slice(0,10);
       if (pair.departure !== pair.arrival) flights.push(pair);
-      if (i !== airports.length - 1) {
+      if (i !== airports.length - 1 && i < group[0].places.length) {
         depTime.setDate(depTime.getDate() + group[0].places[i - 1].lengthOfStay);
       }
     }
