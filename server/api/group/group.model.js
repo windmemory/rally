@@ -10,8 +10,9 @@ var GroupSchema = new Schema({
           longtitude: Number,
           title: String,
           lengthOfStay: Number,
-          estimatedPrice: Number}],
-  people: [{name: String}],
+          estimatedPrice: Number,
+          airport: String}],
+  people: [{name: String, location: String, airport: String}],
   map: {center: {latitude: Number, longtitude:Number}, zoom: Number}
 });
 
