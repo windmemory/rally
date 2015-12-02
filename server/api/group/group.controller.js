@@ -38,7 +38,7 @@ exports.update = function(req, res) {
       return res.status(200).json(group);
     });
   });
-}; 
+};
 
 exports.changeDate = function(req, res) {
   Group.find(function(err, group) {
