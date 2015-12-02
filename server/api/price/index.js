@@ -5,6 +5,6 @@ var controller = require('./price.controller');
 
 var router = express.Router();
 
-router.get('/', controller.index);
+router.get('/:home', controller.index);
 
 module.exports = router;
