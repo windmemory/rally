@@ -2,6 +2,7 @@
 
 angular.module('rallyangApp')
   .service('LocationModelService', function ($http) {
+    /*
     var defaultLocations = [{
         id: '1marker',
         latitude: 47,
@@ -25,9 +26,16 @@ angular.module('rallyangApp')
         people: defaultUsers,
         map: { center: { latitude: 47, longitude: -122 }, zoom: 8 }
     };
+    */
 
     this.getGroupTrip = function(groupId, resultCallback) {
-      resultCallback(groupTrips[groupId]);
+      $http.get('/api/group').success(function(groups) {
+        console.log('groupsResponse: ' + groups);
+        var groupsResponse = JSON.parse(groups);
+        if (groupsResponse && groupsResponse.length) {
+          resultCallback(groupsResponse[0]);
+        }
+      });
     };
     
     this.addPlace = function(placeName, lengthOfStay) {
