@@ -7,6 +7,8 @@ var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
 var User = require('../api/user/user.model');
+var EventEmitter = require("events").EventEmitter;
+var authEventEmitter = new EventEmitter();
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
 /**
@@ -30,6 +32,10 @@ function isAuthenticated() {
         if (!user) return res.status(401).send('Unauthorized');
 
         req.user = user;
+        
+        console.log('emitting event for user login: ' + JSON.stringify(user));
+        authEventEmitter.emit('user:login', user);
+        
         next();
       });
     });
@@ -74,3 +80,12 @@ exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;
+exports.register = function(socket) {
+  authEventEmitter.on('user:login', function(user) {
+    socket.emit('user:login', user);
+  });
+  
+  authEventEmitter.on('user:logout', function(user) {
+    socket.emit('user:logout', user);
+  });  
+};

@@ -14,7 +14,7 @@ angular.module('rallyangApp')
           password: $scope.user.password
         })
         .then( function() {
-          // Logged in, redirect to home
+          // Logged in, redirect to home          
           $location.path('/');
         })
         .catch( function(err) {

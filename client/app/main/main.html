@@ -1,6 +1,19 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-
+<script type="text/ng-template" id="group-template.html">
+    <div class="panel {{panelClass || 'panel-default'}}">
+      <div class="panel-heading">
+        <h4 class="panel-title" style="color:#fa39c3">
+          <a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading"><span
+            ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
+        </h4>
+      </div>
+      <div class="panel-collapse collapse" uib-collapse="!isOpen">
+        <div class="panel-body" style="text-align: right" ng-transclude></div>
+      </div>
+    </div>
+</script>
+  
 <div class="container">
   <div class="row">  
     <div class="col-lg-9">
@@ -15,6 +28,13 @@
     </div>
     
     <div class="col-lg-3">
+      <div ng-if="chatUsers.length > 0">
+        <label>Planned by</label>
+        <p>
+          <span ng-repeat="user in chatUsers">{{user.name}} <br /></span>
+        </p>
+      </div>
+      
       <form class="thing-form">
         <label>Places to go:</label>
         <p class="input-group">
@@ -28,9 +48,17 @@
       <uib-accordion close-others="oneAtATime">
           <uib-accordion-group heading="{{group.title}}" is-open="true" is-disabled="false" ng-repeat="group in map.markers">
             {{group.title}}
-            <span class="pull-right">
-              <a class="btn btn-danger" href="#" ng-click="removePlace(group._id)"><i class="glyphicon glyphicon-remove"></i></a>
-            </span>            
+                                   
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Number of days" ng-model="group.lengthOfStay">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="updatePlace(group._id)"><i class="glyphicon glyphicon-ok"></i></button>
+              </span>
+              <span class="pull-right">
+                <button class="btn btn-danger" type="button" ng-click="removePlace(group._id)"><i class="glyphicon glyphicon-remove"></i></button>
+              </span>
+            </div><!-- /input-group -->
+    
           </uib-accordion-group>
       </uib-accordion>
         

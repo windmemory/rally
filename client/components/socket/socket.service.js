@@ -62,6 +62,13 @@ angular.module('rallyangApp')
           cb(event, item, array);
         });
       },
+      
+      syncUsers: function(cb) {
+        cb = cb || angular.noop;
+        socket.on('user:update', function (users) {
+          cb(users);
+        });
+      },
 
       /**
        * Removes listeners for a models updates on the socket
@@ -71,6 +78,7 @@ angular.module('rallyangApp')
       unsyncUpdates: function (modelName) {
         socket.removeAllListeners(modelName + ':save');
         socket.removeAllListeners(modelName + ':remove');
+        socket.removeAllListeners('user:update');
       }
     };
   });

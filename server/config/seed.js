@@ -33,8 +33,13 @@ Thing.find({}).remove(function() {
 User.find({}).remove(function() {
   User.create({
     provider: 'local',
-    name: 'Test User',
-    email: 'test@test.com',
+    name: 'Lyle',
+    email: 'lyle@expedia.com',
+    password: 'test'
+  }, {
+    provider: 'local',
+    name: 'Radu',
+    email: 'radu@expedia.com',
     password: 'test'
   }, {
     provider: 'local',

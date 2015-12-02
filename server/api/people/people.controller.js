@@ -13,7 +13,7 @@ var airportRequestBuilder = function(city) {
 }
 
 exports.create = function(req, res) {
-  if (req.body == null) return;
+  if (!req.body) return;
   Group.find(function(err, group) {
     if(err) { return handleError(res, err); }
     var people = req.body;
