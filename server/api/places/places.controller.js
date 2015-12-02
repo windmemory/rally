@@ -13,7 +13,6 @@ var _ = require('lodash');
 var Group = require('../group/group.model');
 var request = require('request');
 var ggApiKey = "AIzaSyAHV1wqS2So1_wOxGcXf1D9fzeaIapQ_Is";
-// Get list of things
 
 var geoRequestBuilder = function (city) {
 	var result = "https://maps.googleapis.com/maps/api/geocode/json";
@@ -29,16 +28,7 @@ exports.index = function(req, res) {
   });
 };
 
-// Get a single thing
-exports.show = function(req, res) {
-  Group.findById(req.params.id, function (err, thing) {
-    if(err) { return handleError(res, err); }
-    if(!thing) { return res.status(404).send('Not Found'); }
-    return res.json(thing);
-  });
-};
-
-// Creates a new thing in the DB.
+// add a new place in the DB.
 exports.create = function(req, res) {
   
   Group.find(function(err, group) {
@@ -51,7 +41,6 @@ exports.create = function(req, res) {
       place.longtitude = loc.lng;
       place.estimatedPrice = 0;
       group[0].places.push(place);
-      console.log(group);
       group[0].save(function (err) {
         if (err) {return handleError(res, err); }
         return res.status(200).json(group);
@@ -62,26 +51,58 @@ exports.create = function(req, res) {
 
 // Updates an existing thing in the DB.
 exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Group.findById(req.params.id, function (err, thing) {
-    if (err) { return handleError(res, err); }
-    if(!thing) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(thing, req.body);
-    updated.save(function (err) {
-      if (err) { return handleError(res, err); }
-      return res.status(200).json(thing);
-    });
+  Group.find(function(err, group) {
+    if(err) { return handleError(res, err); }
+    var findID = req.params.id.toString();
+    var i = 0;
+    for (; i < group[0].places.length; i++) {
+      if (group[0].places[i]._id.toString() === findID) break;
+    }
+    if (i === group[0].places.length) {
+      return res.status(404).send("the place not found");
+    }
+    var place = req.body;
+    if (place.title === group[0].places[i].title) {
+      group[0].places[i].lengthOfStay = place.lengthOfStay;
+      group[0].save(function (err) {
+        if (err) {return handleError(res, err); }
+        return res.status(200).json(group);
+      })
+    } else {
+      var requesturl = geoRequestBuilder(place.title);
+      request(requesturl, function(err, content, body) {
+        var loc = JSON.parse(body).results[0].geometry.location;
+        group[0].places[i].latitude = loc.lat;
+        group[0].places[i].longtitude = loc.lng;
+        group[0].places[i].estimatedPrice = 0;
+        group[0].places[i].title = place.title;
+        group[0].places[i].lengthOfStay = place.lengthOfStay;
+        group[0].save(function (err) {
+          if (err) {return handleError(res, err); }
+          return res.status(200).json(group);
+        });
+      });
+    }
   });
 };
 
 // Deletes a thing from the DB.
 exports.destroy = function(req, res) {
-  Group.findById(req.params.id, function (err, thing) {
+  Group.find(function(err, group) {
     if(err) { return handleError(res, err); }
-    if(!thing) { return res.status(404).send('Not Found'); }
-    thing.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.status(204).send('No Content');
+    var deleteID = req.params.id.toString();
+    var i = 0;
+    for (; i < group[0].places.length; i++) {
+      if (group[0].places[i]._id.toString() === deleteID) break;
+    }
+    if (i === group[0].places.length) {
+      return res.status(404).send("not found the place");
+    }
+    group[0].places.splice(i, i + 1);
+    
+    group[0].save(function (err) {
+      if (err) {return handleError(res, err); }
+      return res.status(200).json(group);
     });
   });
 };
