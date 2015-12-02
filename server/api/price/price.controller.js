@@ -42,6 +42,7 @@ exports.index = function(req, res) {
       if (pair.departure !== pair.arrival) flights.push(pair);
       if (i !== airports.length - 1 && i < group[0].places.length) {
         depTime.setDate(depTime.getDate() + group[0].places[i - 1].lengthOfStay);
+
       }
     }
     
