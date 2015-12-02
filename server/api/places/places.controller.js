@@ -13,11 +13,19 @@ var _ = require('lodash');
 var Group = require('../group/group.model');
 var request = require('request');
 var ggApiKey = "AIzaSyAHV1wqS2So1_wOxGcXf1D9fzeaIapQ_Is";
+var expApiKey = "VkCSTYX5FRtM7gxuWSjQYgLiTfG0yID0";
 
 var geoRequestBuilder = function (city) {
 	var result = "https://maps.googleapis.com/maps/api/geocode/json";
 	result += "?address=" + city;
 	result += "&key=" + ggApiKey;
+	return encodeURI(result);
+}
+
+var airportRequestBuilder = function(city) {
+	var result = "http://terminal2.expedia.com/x/suggestions/flights?query=";
+	result += city;
+	result += "&apikey=" + expApiKey;
 	return encodeURI(result);
 }
 
@@ -30,7 +38,7 @@ exports.index = function(req, res) {
 
 // add a new place in the DB.
 exports.create = function(req, res) {
-  
+  if (req.body == null) return;
   Group.find(function(err, group) {
     if(err) { return handleError(res, err); }
     var place = req.body;
@@ -40,10 +48,15 @@ exports.create = function(req, res) {
       place.latitude = loc.lat;
       place.longtitude = loc.lng;
       place.estimatedPrice = 0;
-      group[0].places.push(place);
-      group[0].save(function (err) {
-        if (err) {return handleError(res, err); }
-        return res.status(200).json(group);
+      var portRequestStr = airportRequestBuilder(place.title);
+      request(portRequestStr, function(err, content, body) {
+        var airport = JSON.parse(body).sr[0].pt[0].t;
+        place.airport = airport;
+        group[0].places.push(place);
+        group[0].save(function (err) {
+          if (err) {return handleError(res, err); }
+          return res.status(200).json(group);
+        });
       });
     });
   });
@@ -77,9 +90,14 @@ exports.update = function(req, res) {
         group[0].places[i].estimatedPrice = 0;
         group[0].places[i].title = place.title;
         group[0].places[i].lengthOfStay = place.lengthOfStay;
-        group[0].save(function (err) {
-          if (err) {return handleError(res, err); }
-          return res.status(200).json(group);
+        var portRequestStr = airportRequestBuilder(place.title);
+        request(portRequestStr, function(err, content, body) {
+          var airport = JSON.parse(body).sr[0].pt[0].t;
+          group[0].places[i].airport = airport;
+          group[0].save(function (err) {
+            if (err) {return handleError(res, err); }
+            return res.status(200).json(group);
+          });
         });
       });
     }
