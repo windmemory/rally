@@ -30,18 +30,31 @@ angular.module('rallyangApp')
 
     this.getGroupTrip = function(groupId, resultCallback) {
       $http.get('/api/group').success(function(groups) {
-        console.log('groupsResponse: ' + groups);
-        var groupsResponse = JSON.parse(groups);
-        if (groupsResponse && groupsResponse.length) {
-          resultCallback(groupsResponse[0]);
+        if (groups && groups.length) {
+          var result = groups[0];
+          
+          result.places = _.map(result.places, function(place) {
+            if (place._id) {
+              place.id = place._id;
+            }
+            return place;
+          });
+          
+          if (result.places && result.places.length) {
+            result.map = { center: { latitude: result.places[0].latitude, longitude: result.places[0].longitude }, zoom: 8 };            
+          } else {
+            result.map = { center: { latitude: 47.610377, longitude: -122.2006786 }, zoom: 8 };
+          }
+          
+          resultCallback(result);
         }
       });
     };
     
     this.addPlace = function(placeName, lengthOfStay) {
       console.log('adding ' + placeName);
-      $http.post('/api/places', {title: placeName, lengthOfStay: 1}).success(function() {
-        console.log(placeName + ' added');        
+      $http.post('/api/places', {title: placeName, lengthOfStay: lengthOfStay}).success(function() {
+        console.log(placeName + ' added');
       });
     };
     

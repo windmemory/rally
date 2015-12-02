@@ -5,6 +5,7 @@ angular.module('rallyangApp')
     $scope.newPlaceName = '';
     $scope.newPlaceLengthOfStay = 1;
     $scope.groupId = 1;
+    $scope.lastUpdated = 0;
     
     var groupCallback = function(group) {
       if (group !== null) {
@@ -14,9 +15,15 @@ angular.module('rallyangApp')
     };
     
     LocationModelService.getGroupTrip($scope.groupId, groupCallback);
-    socket.syncUpdates('places', [], function(event, item) {
-      console.log('reloading information for group ' + $scope.groupId);
-      LocationModelService.getGroupTrip($scope.groupId, groupCallback);
+    socket.syncUpdates('group', [], function(event, item) {
+      console.log('reloading information for group ' + $scope.groupId + ' on event ' + event + ' for item ' + item);
+      var currentTime = new Date().getTime();
+      
+      if (currentTime - $scope.lastUpdated > 1000) {
+        console.log('query api for updates...');
+        LocationModelService.getGroupTrip($scope.groupId, groupCallback);
+        $scope.lastUpdated = currentTime;
+      }
     });
         
     $http.get('/api/things').success(function(awesomeThings) {
