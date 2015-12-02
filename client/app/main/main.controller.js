@@ -9,9 +9,11 @@ angular.module('rallyangApp')
     
     var groupCallback = function(group) {
       if (group !== null) {
+          console.log('updating for group ' + JSON.stringify(group));
           $scope.map = group.map;
           $scope.map.markers = group.places;
-        }      
+          console.log('scope updated to ' + JSON.stringify($scope.map));
+        }
     };
     
     LocationModelService.getGroupTrip($scope.groupId, groupCallback);
@@ -46,6 +48,11 @@ angular.module('rallyangApp')
       $scope.newPlaceName = '';
       $scope.newPlaceLengthOfStay = 1;
     };
+    
+    $scope.removePlace = function(placeId) {
+      console.log('removing place with id ' + placeId);
+      LocationModelService.removePlace(placeId);
+    }
   
     $scope.addThing = function() {
       if($scope.newThing === '') {

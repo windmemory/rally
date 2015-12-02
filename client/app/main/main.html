@@ -8,15 +8,15 @@
       <ui-gmap-google-map center='map.center' zoom='map.zoom' draggable='true'>
           <!--<ui-gmap-layer namespace="weather" type="WeatherLayer" show="true"></ui-gmap-layer>
           <ui-gmap-layer namespace="visualization" type="HeatmapLayer" show="true"></ui-gmap-layer>-->
-          <ui-gmap-markers models="map.markers" coords="'self'" icon="'icon'" click="onMarkerClicked" modelsbyref="true" doCluster="false" >
+          <ui-gmap-markers models="map.markers" coords="'self'" icon="'icon'" 
+            click="onMarkerClicked" modelsbyref="true" doCluster="false" fit="true" >
           </ui-gmap-markers>       
       </ui-gmap-google-map>
     </div>
     
     <div class="col-lg-3">
-      <strong>Places to go:</strong> <br />
       <form class="thing-form">
-        <label>Syncs in realtime across clients</label>
+        <label>Places to go:</label>
         <p class="input-group">
           <input type="text" class="form-control" placeholder="Add a new place here." ng-model="newPlaceName" />
           <span class="input-group-btn">
@@ -28,6 +28,9 @@
       <uib-accordion close-others="oneAtATime">
           <uib-accordion-group heading="{{group.title}}" is-open="true" is-disabled="false" ng-repeat="group in map.markers">
             {{group.title}}
+            <span class="pull-right">
+              <a class="btn btn-danger" href="#" ng-click="removePlace(group._id)"><i class="glyphicon glyphicon-remove"></i></a>
+            </span>            
           </uib-accordion-group>
       </uib-accordion>
         

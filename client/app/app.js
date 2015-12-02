@@ -15,6 +15,7 @@ angular.module('rallyangApp', [
       .otherwise('/');
 
     uiGmapGoogleMapApiProvider.configure({
+        key: 'AIzaSyDrRRAh2RoL9L9WfSsjSlCmpLZD0k2QVVs',
         libraries: 'weather,geometry,visualization'
     });
      
