@@ -118,7 +118,7 @@ angular.module('rallyangApp')
       LocationModelService.updateStartDate($scope.currentStartDate, function() {
         LocationModelService.getGroupTrip($scope.groupId, groupCallback);
       });
-    }
+    };
         
     Auth.isLoggedInAsync(function(isloggedIn) {
       if (isloggedIn) {

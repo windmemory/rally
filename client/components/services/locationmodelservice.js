@@ -92,7 +92,7 @@ angular.module('rallyangApp')
         $http.post('/api/group/' + newStartDate).success(function() {
           cb();
         });      
-    }
+    };
     
     /*
     this.updatePeople = function(loggedInUser) {
