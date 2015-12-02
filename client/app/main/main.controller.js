@@ -9,18 +9,20 @@ angular.module('rallyangApp')
     $scope.chatUsers = [];
     $scope.totalPrice = 0;
     $scope.currentPerson = {};
+    $scope.currentStartDate = '2015-12-2';
     
     var groupCallback = function(group) {
       if (group !== null) {
           console.log('updating for group ' + JSON.stringify(group));
           $scope.map = group.map;
           $scope.map.markers = group.places;
+          $scope.currentStartDate = group.startDate;
           var currentLoggedInUser = Auth.getCurrentUser();
           
           console.log('scope updated to ' + JSON.stringify($scope.map));
           
           var currentUser = _.first(_.filter(group.people, function(people) {
-            console.log(people.name + ' vs ' + currentLoggedInUser.name)
+            console.log(people.name + ' vs ' + currentLoggedInUser.name);
             return people.name === currentLoggedInUser.name;
           }));
           
@@ -64,7 +66,7 @@ angular.module('rallyangApp')
       $scope.$apply();
       //window.alert("Marker: lat: " + marker.latitude + ", lon: " + marker.longitude + " clicked!!")
     };
-    
+        
     $scope.addPlace = function() {
       if ($scope.newPlaceName === '' || $scope.newPlaceLengthOfStay < 1) {
         return;
@@ -88,11 +90,41 @@ angular.module('rallyangApp')
       updatePricesForUserLocation();
     };
     
+    function movePlace(moveUp, placeId) {
+      var place = _.first(_.filter($scope.map.markers, function(m) {
+        return m._id === placeId;
+      }));
+      
+      if (!place) {
+        console.log('can not find place with id ' + placeId);
+        return;
+      }
+      
+      LocationModelService.movePlace(place.orderID, function() {
+        LocationModelService.getGroupTrip($scope.groupId, groupCallback);
+      });
+    }
+    
+    $scope.movePlaceDown = function(placeId) {
+      movePlace(false, placeId);
+    };
+    
+    $scope.movePlaceUp = function(placeId) {
+      movePlace(true, placeId);
+    };
+    
+    $scope.updateStartDate = function() {
+      console.log('updating start date...' + $scope.currentStartDate);
+      LocationModelService.updateStartDate($scope.currentStartDate, function() {
+        LocationModelService.getGroupTrip($scope.groupId, groupCallback);
+      });
+    }
+        
     Auth.isLoggedInAsync(function(isloggedIn) {
       if (isloggedIn) {
         var loggedInUser = Auth.getCurrentUser();
         console.log('user logged in, add him to chat: ' + JSON.stringify(loggedInUser));
-        // LocationModelService.updatePeople(loggedInUser);
+        
         socket.socket.emit('user:login', {name: loggedInUser.name});
         
         LocationModelService.getGroupTrip($scope.groupId, groupCallback);

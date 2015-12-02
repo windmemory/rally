@@ -1,18 +1,4 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
-
-<script type="text/ng-template" id="group-template.html">
-    <div class="panel {{panelClass || 'panel-default'}}">
-      <div class="panel-heading">
-        <h4 class="panel-title" style="color:#fa39c3">
-          <a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading"><span
-            ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
-        </h4>
-      </div>
-      <div class="panel-collapse collapse" uib-collapse="!isOpen">
-        <div class="panel-body" style="text-align: right" ng-transclude></div>
-      </div>
-    </div>
-</script>
   
 <div class="container">
   <div class="row">  
@@ -36,6 +22,16 @@
       </div>
       
       <form class="thing-form">
+        <label>Update start date:</label>
+        <p class="input-group">
+          <input type="text" class="form-control" placeholder="Trip start date" ng-model="currentStartDate" />
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-primary" ng-click="updateStartDate()">Update</button>
+          </span>
+        </p>
+      </form>
+            
+      <form class="thing-form">
         <label>Places to go:</label>
         <p class="input-group">
           <input type="text" class="form-control" placeholder="Add a new place here." ng-model="newPlaceName" />
@@ -49,8 +45,8 @@
           <uib-accordion-group heading="{{group.title}} ${{group.price}}" is-open="true" is-disabled="false" ng-repeat="group in map.markers">
             
             <div>
-              <button class="btn btn-default" type="button" ng-click="updatePlace(group._id)"><i class="glyphicon glyphicon-upload"></i> </button>
-              <button class="btn btn-default" type="button" ng-click="updatePlace(group._id)"><i class="glyphicon glyphicon-download"></i> </button>
+              <button class="btn btn-default" type="button" ng-click="movePlaceUp(group._id)"><i class="glyphicon glyphicon-upload"></i> </button>
+              <button class="btn btn-default" type="button" ng-click="movePlaceDown(group._id)"><i class="glyphicon glyphicon-download"></i> </button>
             </div>
                                    
             <div class="input-group">

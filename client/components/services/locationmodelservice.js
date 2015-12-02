@@ -33,13 +33,13 @@ angular.module('rallyangApp')
         if (groups && groups.length) {
           var result = groups[0];
           
-          result.places = _.map(result.places, function(place) {
+          result.places = _.sortBy(_.map(result.places, function(place) {
             if (place._id) {
               place.id = place._id;
             }
             place.longitude = place.longtitude;
             return place;
-          });
+          }), function(place) {return place.orderID; });
           
           if (result.places && result.places.length) {
             result.map = { center: { latitude: result.places[0].latitude, longitude: result.places[0].longtitude }, zoom: 4 };            
@@ -78,7 +78,20 @@ angular.module('rallyangApp')
       $http.get('/api/price/' + locationName).success(function(response) {
         console.log('price response: ' + JSON.stringify(response));
         cb(response);
-      })  
+      });
+    };
+    
+    this.movePlace = function(placeOrderId, cb) {
+      $http.put('/api/modify/swap/' + placeOrderId).success(function() {
+        cb();
+      });
+    };
+    
+    this.updateStartDate = function(newStartDate, cb) {
+        console.log('about to update start date to ' + newStartDate);
+        $http.post('/api/group/' + newStartDate).success(function() {
+          cb();
+        });      
     }
     
     /*
