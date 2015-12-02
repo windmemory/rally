@@ -40,6 +40,17 @@ exports.update = function(req, res) {
   });
 }; 
 
+exports.changeDate = function(req, res) {
+  Group.find(function(err, group) {
+    if (err) { return handleError(res, err); }
+    group[0].startDate = req.params.date;
+    group[0].save(function(err) {
+      if (err) { return handleError(res, err); }
+      return res.status(200).json(group);
+    });
+  });
+}
+
 function handleError(res, err) {
   return res.status(500).send(err);
 }
